@@ -14,24 +14,28 @@ namespace Zoo.Test
         public async Task DameTodos()
         {
             EspeciesController miController = new EspeciesController(new EspecieRepositoryFake());
-
-            var result = (ViewResult) await miController.Index();
-            Assert.IsNotNull(miController);
-            Assert.IsNotNull(result);
-            //var aux = result.ViewData.ToList<Especie>();
-            
-            Assert.AreEqual(3,result.ViewData.Model);
+            ViewResult? result = await miController.Index() as ViewResult;
+            if (result != null)
+            {
+                List<Especie>? especies = result.ViewData.Model as List<Especie>;
+                Assert.AreEqual(3,especies.Count);
+                int sumatorio = especies.AsParallel().Sum(item => item.Extension);
+                Assert.AreEqual(410, sumatorio);
+            }
         }
+
+        
         [TestMethod]
         public async Task AddEspecie()
         {
             EspeciesController miController = new EspeciesController(new EspecieRepositoryFake());
             var miEspecie = new Especie() { Id = 4, Extension = 160, Habitat = "Selva", Name = "Mono" };
             await miController.Create(miEspecie);
-            var result = (ViewResult)await miController.Index();
-            Assert.IsNotNull(miController);
-            Assert.IsNotNull(result);
-            Assert.AreEqual(4, result.ViewData.Count);
+            ViewResult? result = await miController.Index() as ViewResult;
+            List<Especie> especies = (List<Especie>)result.ViewData.Model;
+            Assert.AreEqual(4, especies.Count);
+            int sumatorio = especies.AsParallel().Sum(item => item.Extension);
+            Assert.AreEqual(570, sumatorio);
         }
     }
 }
