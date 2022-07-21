@@ -15,5 +15,7 @@ namespace Zoo.Data
         }
 
         public DbSet<Zoo.Models.Especie> Especie { get; set; } = default!;
+
+        public DbSet<Zoo.Models.Animal>? Animal { get; set; }
     }
 }
